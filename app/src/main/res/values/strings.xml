@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AstroNerd</string>
+    <string name="diameter_range">%.2f…%.2f</string>
+</resources>

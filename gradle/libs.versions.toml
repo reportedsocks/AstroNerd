@@ -1,0 +1,188 @@
+[versions]
+compileSdk = "34"
+targetSdk = "34"
+minSdk = "24"
+
+androidGradlePlugin = "8.2.0"
+androidTools = "31.3.0"
+androidxActivity = "1.8.2"
+androidxAppCompat = "1.6.1"
+androidxComposeBom = "2024.02.01"
+androidxComposeCompiler = "1.5.10"
+androidxCore = "1.12.0"
+androidxCoreTest = "1.5.0"
+androidxCoreSplashscreen = "1.0.1"
+androidxCoreTesting = "2.2.0"
+androidxDataStore = "1.0.0"
+androidxLifecycle = "2.7.0"
+androidxNavigation = "2.7.7"
+androidxWork = "2.9.0"
+coil = "2.5.0"
+constraintlayout = "1.0.1"
+corouitnesTest = "1.7.3"
+crashlytics = "2.9.9"
+firebase = "32.7.4"
+googleservices = "4.4.1"
+junit = "4.13.2"
+junitPlatformRunner = "1.10.0"
+junitVersion = "1.1.5"
+koinBom = "3.5.3"
+kotlin = "1.9.22"
+kotlinTestJunit = "1.9.21"
+ksp = "1.9.22-1.0.17"
+lottie = "6.3.0"
+moshi = "1.15.0"
+mockk = "1.13.7"
+mpAndroidChart = "v3.1.0"
+okhttp = "4.12.0"
+paging = "3.2.1"
+retrofit = "2.9.0"
+rulesTest = "1.5.0"
+runnerTest = "1.5.2"
+room = "2.6.1"
+hilt = "2.48"
+
+[libraries]
+# https://mvnrepository.com/artifact/androidx.activity/activity-compose
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+
+# https://mvnrepository.com/artifact/androidx.appcompat/appcompat
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+
+# https://mvnrepository.com/artifact/androidx.compose/compose-bom
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
+
+#https://mvnrepository.com/artifact/androidx.constraintlayout/constraintlayout-compose
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
+
+# https://mvnrepository.com/artifact/androidx.core/core-ktx
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+
+# https://mvnrepository.com/artifact/androidx.core/core-splashscreen
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
+
+# https://mvnrepository.com/artifact/androidx.datastore/datastore-core
+androidx-dataStore-core = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
+# https://mvnrepository.com/artifact/androidx.datastore/datastore-preferences
+androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
+
+# https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-runtime-compose
+androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+
+# https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-compose
+androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+
+# https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+
+# https://mvnrepository.com/artifact/androidx.paging/paging-runtime
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+# https://mvnrepository.com/artifact/androidx.paging/paging-compose
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
+
+# https://mvnrepository.com/artifact/androidx.work/work-runtime-ktx
+androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
+
+# https://mvnrepository.com/artifact/io.coil-kt/coil
+coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+# https://mvnrepository.com/artifact/io.coil-kt/coil-compose
+coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+# https://mvnrepository.com/artifact/io.coil-kt/coil-svg
+coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+
+# https://firebase.google.com/support/release-notes/android
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+
+# Hilt
+hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hiltc = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+
+# https://mvnrepository.com/artifact/com.airbnb.android/lottie-compose
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
+
+# https://mvnrepository.com/artifact/com.squareup.moshi/moshi
+moshi-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+# https://mvnrepository.com/artifact/com.squareup.moshi/moshi-kotlin
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+# https://mvnrepository.com/artifact/com.squareup.moshi/moshi-kotlin-codegen
+moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+
+# https://jitpack.io/#PhilJay/MPAndroidChart
+mpAndroidChart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpAndroidChart" }
+
+# https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+
+# https://mvnrepository.com/artifact/androidx.room/room-compiler
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+# https://mvnrepository.com/artifact/androidx.room/room-ktx
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+# https://mvnrepository.com/artifact/androidx.room/room-runtime
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+# https://mvnrepository.com/artifact/androidx.room/room-paging
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+
+# Tests
+android-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidxCoreTest" }
+android-test-runner = { group = "androidx.test", name = "runner", version.ref = "runnerTest" }
+android-test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesTest" }
+androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidxCoreTesting" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junitPlatformRunner" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "corouitnesTest" }
+kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlinTestJunit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
+
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+
+[plugins]
+# https://mvnrepository.com/artifact/com.android.tools.build/gradle
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+# https://mvnrepository.com/artifact/com.android.library/com.android.library.gradle.plugin
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+# https://firebase.google.com/support/release-notes/android
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+# https://developers.google.com/android/guides/releases
+google-services = { id = "com.google.gms.google-services", version.ref = "googleservices" }
+# https://github.com/JetBrains/kotlin/releases
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+# https://plugins.gradle.org/plugin/org.jetbrains.kotlin.plugin.parcelize/1.9.20
+kotlin-parcelize = { id = "kotlin-parcelize", version.ref = "kotlin" }
+# https://github.com/google/ksp/releases
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+# https://mvnrepository.com/artifact/androidx.room
+room = { id = "androidx.room", version.ref = "room" }
+# Hilt
+hilt = { id = "com.google.dagger.hilt.android", version.ref="hilt" }
+
+# Plugins defined by this project
+antsyferov-android-application = { id = "antsyferov.android.application", version = "unspecified" }
+antsyferov-android-application-compose = { id = "antsyferov.android.application.compose", version = "unspecified" }
+antsyferov-android-feature = { id = "antsyferov.android.feature", version = "unspecified" }
+antsyferov-android-hilt = { id = "antsyferov.android.hilt", version = "unspecified" }
+antsyferov-android-library = { id = "antsyferov.android.library", version = "unspecified" }
+antsyferov-android-library-compose = { id = "antsyferov.android.library.compose", version = "unspecified" }
+antsyferov-android-room = { id = "antsyferov.android.room", version = "unspecified" }
+antsyferov-android-test = { id = "antsyferov.android.test", version = "unspecified" }
