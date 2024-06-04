@@ -1,4 +1,4 @@
-package com.antsyferov.astronerd.ui.panes
+package com.antsyferov.astronerd.ui.panes.asteroid_list_detail.asteroids_list
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
@@ -21,7 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -45,7 +44,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.antsyferov.astronerd.R
 import com.antsyferov.astronerd.ui.composables.AsteroidCard
 import com.antsyferov.astronerd.ui.composables.molecule.FilterChip
-import com.antsyferov.astronerd.ui.composables.molecule.TitleValueChip
 import com.antsyferov.astronerd.ui.composables.template.AsteroidCardShimmer
 import com.antsyferov.astronerd.ui.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -84,7 +82,7 @@ fun AsteroidsListPane(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = AppTheme.colors.background
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val scrollState = rememberLazyListState()

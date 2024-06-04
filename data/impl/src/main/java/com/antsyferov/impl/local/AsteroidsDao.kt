@@ -21,4 +21,10 @@ interface AsteroidsDao {
 
     @Query("DELETE FROM asteroids")
     suspend fun clearAll()
+
+    @Query("SELECT * FROM asteroids WHERE id=:id")
+    suspend fun getById(id: String): AsteroidEntity?
+
+    @Query("UPDATE asteroids SET is_favourite=:isFav WHERE id=:id")
+    suspend fun setFavourite(id: String, isFav: Boolean)
 }

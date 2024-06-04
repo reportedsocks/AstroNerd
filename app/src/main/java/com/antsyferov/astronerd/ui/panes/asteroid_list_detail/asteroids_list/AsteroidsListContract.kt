@@ -1,4 +1,4 @@
-package com.antsyferov.astronerd.ui.panes
+package com.antsyferov.astronerd.ui.panes.asteroid_list_detail.asteroids_list
 
 data class AsteroidsListState(
     val loading: LoadingState = LoadingState.Initial,

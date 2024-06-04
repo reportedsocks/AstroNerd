@@ -96,6 +96,7 @@ dependencies {
     implementation("androidx.compose.material3.adaptive:adaptive:1.0.0-beta02")
     implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0-beta02")
     implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0-beta02")
+    implementation(libs.androidx.material3.adaptive.navigation.suite.android)
 
 }
 

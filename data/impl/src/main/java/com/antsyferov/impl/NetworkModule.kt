@@ -58,7 +58,7 @@ object  NetworkModule {
 
             install(DefaultRequest) {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
-                parameter("api_key", "96wUpzriqFPwKEOet70GLcRjoOHGXOrW0PS0RFw2")
+                parameter("api_key", "GV6vbjDqYL0YwXxm6NdAvCjJZuS0TlsAoFIwfmYj")//"96wUpzriqFPwKEOet70GLcRjoOHGXOrW0PS0RFw2")
             }
 
         }

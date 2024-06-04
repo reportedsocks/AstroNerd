@@ -34,7 +34,9 @@ data class AsteroidEntity(
     @Embedded
     val closeApproachData: CloseApproachEntity?,
     @ColumnInfo("is_sentry_object")
-    val isSentryObject: Boolean = false
+    val isSentryObject: Boolean = false,
+    @ColumnInfo("is_favourite")
+    val isFavourite: Boolean = false
 ) {
     data class CloseApproachEntity(
         @ColumnInfo("close_approach_date")
