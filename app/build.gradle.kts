@@ -91,6 +91,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.ui.util)
 
+    implementation("com.google.android.material:material:1.12.0")
+
     implementation(libs.androidx.core.splashscreen)
 
     implementation("androidx.compose.material3.adaptive:adaptive:1.0.0-beta02")

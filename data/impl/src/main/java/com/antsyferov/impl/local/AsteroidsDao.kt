@@ -25,6 +25,9 @@ interface AsteroidsDao {
     @Query("SELECT * FROM asteroids WHERE id=:id")
     suspend fun getById(id: String): AsteroidEntity?
 
+    @Query("SELECT * FROM asteroids WHERE is_favourite=1")
+    fun getFavouriteAsteroids(): Flow<List<AsteroidEntity>>
+
     @Query("UPDATE asteroids SET is_favourite=:isFav WHERE id=:id")
     suspend fun setFavourite(id: String, isFav: Boolean)
 }
