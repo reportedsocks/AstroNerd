@@ -48,19 +48,20 @@ class AsteroidsListViewModel @Inject constructor(
     val stateFlow: StateFlow<AsteroidsListState> = _stateFlow.asStateFlow()
     val asteroidsFlow = Pager(
         config = PagingConfig(
-            pageSize = PagingConfig.MAX_SIZE_UNBOUNDED,
-            prefetchDistance = 2
+            pageSize = 10,
+            prefetchDistance = 20,
+            initialLoadSize = 20
         )
     ) { asteroidsDao.pagingSource().also { pagingSource = it } }
         .flow
-        .flowOn(Dispatchers.IO)
-        .onEach { _ ->
-            _stateFlow.update { it.copy(loading = LoadingState.Done) }
-        }
         .cachedIn(viewModelScope)
         .combine(stateFlow) { pagingData, state ->
             pagingData.filter { filter(it, state.filters) }
         }
+        .onEach { _ ->
+            _stateFlow.update { it.copy(loading = LoadingState.Done) }
+        }
+        .flowOn(Dispatchers.IO)
 
     init {
 

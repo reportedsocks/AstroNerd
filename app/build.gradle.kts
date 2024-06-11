@@ -47,12 +47,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
+
 }
 
 dependencies {
@@ -99,6 +100,8 @@ dependencies {
     implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0-beta02")
     implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0-beta02")
     implementation(libs.androidx.material3.adaptive.navigation.suite.android)
+
+    implementation("io.github.sceneview:sceneview:2.2.0")
 
 }
 

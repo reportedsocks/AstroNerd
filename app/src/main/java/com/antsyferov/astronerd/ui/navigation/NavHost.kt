@@ -12,18 +12,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.antsyferov.astronerd.ui.panes.asteroid_list_detail.AsteroidsListDetail
 import com.antsyferov.astronerd.ui.panes.favourite_asteroid_list_detail.FavouriteAsteroidsListDetail
+import com.antsyferov.astronerd.ui.panes.visualization.Visualization
 import com.antsyferov.astronerd.ui.theme.AppTheme
 
 @Composable
 fun AppNavHost(
     navHostController: NavHostController
 ) {
+    fun onNavToVisualization() {
+        navHostController.navigate("visualization")
+    }
+
     NavHost(navController = navHostController, startDestination = "home") {
+
         composable("home") {
-            AsteroidsListDetail()
+            AsteroidsListDetail(onVisualizationClick = ::onNavToVisualization)
         }
         composable("favourites") {
-            FavouriteAsteroidsListDetail()
+            FavouriteAsteroidsListDetail(onVisualizationClick = ::onNavToVisualization)
+        }
+        composable("visualization") {
+            Visualization()
         }
     }
 }

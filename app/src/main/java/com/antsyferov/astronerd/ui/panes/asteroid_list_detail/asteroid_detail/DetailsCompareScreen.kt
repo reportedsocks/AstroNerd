@@ -3,7 +3,6 @@ package com.antsyferov.astronerd.ui.panes.asteroid_list_detail.asteroid_detail
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +31,6 @@ import com.antsyferov.astronerd.ui.composables.molecule.DetailsCompareDistanceCh
 import com.antsyferov.astronerd.ui.composables.template.CompareSizeChart
 import com.antsyferov.astronerd.ui.theme.AppTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DetailsCompareScreen(
     modifier: Modifier = Modifier,

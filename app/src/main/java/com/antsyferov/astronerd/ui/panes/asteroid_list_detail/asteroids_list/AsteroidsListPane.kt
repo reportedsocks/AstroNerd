@@ -46,6 +46,7 @@ import com.antsyferov.astronerd.ui.composables.AsteroidCard
 import com.antsyferov.astronerd.ui.composables.molecule.FilterChip
 import com.antsyferov.astronerd.ui.composables.template.AsteroidCardShimmer
 import com.antsyferov.astronerd.ui.theme.AppTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -55,7 +56,8 @@ fun AsteroidsListPane(
     onAsteroidSelected: (String) -> Unit
 ) {
 
-    val asteroids = viewModel.asteroidsFlow.collectAsLazyPagingItems()
+    val asteroids = viewModel.asteroidsFlow.collectAsLazyPagingItems(Dispatchers.IO)
+
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     val coroutineScope = rememberCoroutineScope()
@@ -87,8 +89,10 @@ fun AsteroidsListPane(
         Box(modifier = Modifier.fillMaxSize()) {
             val scrollState = rememberLazyListState()
 
-            LaunchedEffect(!scrollState.canScrollForward) {
-                if (state.loading == LoadingState.Done) viewModel.loadNextPage()
+            LaunchedEffect(asteroids.loadState.append.endOfPaginationReached) {
+                if (asteroids.loadState.append.endOfPaginationReached && state.loading == LoadingState.Done) {
+                    viewModel.loadNextPage()
+                }
             }
             Column {
 

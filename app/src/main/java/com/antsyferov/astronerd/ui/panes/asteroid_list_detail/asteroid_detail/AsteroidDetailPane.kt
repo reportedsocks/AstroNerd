@@ -56,7 +56,8 @@ fun AsteroidDetailsPane(
     asteroidId: String?,
     viewModel: AsteroidsDetailsViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onSBDClick: (String) -> Unit
+    onSBDClick: (String) -> Unit,
+    onVisualizationClick: () -> Unit
 ) {
     if (asteroidId != null) {
         LaunchedEffect(asteroidId) {
@@ -70,7 +71,7 @@ fun AsteroidDetailsPane(
                     onBackClick = onBackClick,
                     onSaveClick = { viewModel.toggleFavourite() },
                     isSavedAsteroid = it.isFavourite,
-                    onCompareClick = {  },
+                    onVisualizationClick = onVisualizationClick,
                     compareFabVisibility = false,
                     onSbdClick = onSBDClick,
                     isDistanceDanger = false
@@ -99,7 +100,7 @@ private fun DetailsScreenComposable(
     onBackClick: () -> Unit,
     onSaveClick: (value: Boolean) -> Unit,
     isSavedAsteroid: Boolean,
-    onCompareClick: () -> Unit,
+    onVisualizationClick: () -> Unit,
     compareFabVisibility: Boolean,
     onSbdClick: (url: String) -> Unit,
     isDistanceDanger: Boolean
@@ -137,7 +138,7 @@ private fun DetailsScreenComposable(
                     onBackClick = onBackClick,
                     onSaveClick = onSaveClick,
                     isSavedAsteroid = isSavedAsteroid,
-                    onCompareClick = onCompareClick,
+                    onVisualizationClick = onVisualizationClick,
                     compareFabVisibility = compareFabVisibility,
                     onSbdClick = onSbdClick,
                     isDistanceDanger = isDistanceDanger
@@ -156,7 +157,7 @@ fun DetailsMainContent(
     onBackClick: () -> Unit,
     onSaveClick: (value: Boolean) -> Unit,
     isSavedAsteroid: Boolean,
-    onCompareClick: () -> Unit,
+    onVisualizationClick: () -> Unit,
     compareFabVisibility: Boolean,
     onSbdClick: (url: String) -> Unit,
     isDistanceDanger: Boolean
@@ -194,14 +195,14 @@ fun DetailsMainContent(
         },
         floatingActionButton = {
             AnimatedVisibility(
-                visible = compareFabVisibility,
+                visible = true,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
                 PrimaryFAB(
-                    title = "Compare",
+                    title = "3D",
                     iconRes = R.drawable.ic_compare_arrow,
-                    onFabClick = onCompareClick,
+                    onFabClick = onVisualizationClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp)
                 )
             }
