@@ -1,156 +1,150 @@
 package com.antsyferov.astronerd.ui.panes.visualization
 
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.antsyferov.astronerd.R
-import io.github.sceneview.Scene
-import io.github.sceneview.animation.Transition.animateRotation
-import io.github.sceneview.math.Position
-import io.github.sceneview.math.Rotation
-import io.github.sceneview.node.ModelNode
-import io.github.sceneview.rememberCameraManipulator
-import io.github.sceneview.rememberCameraNode
-import io.github.sceneview.rememberEngine
-import io.github.sceneview.rememberEnvironmentLoader
-import io.github.sceneview.rememberModelLoader
-import io.github.sceneview.rememberNode
-import io.github.sceneview.rememberOnGestureListener
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
+import com.antsyferov.astronerd.ui.theme.AppTheme
+import kotlinx.coroutines.delay
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+
 
 @Composable
 fun Visualization() {
     Box(modifier = Modifier.fillMaxSize()) {
-        val engine = rememberEngine()
-        val modelLoader = rememberModelLoader(engine)
-        val environmentLoader = rememberEnvironmentLoader(engine)
-        val context = LocalContext.current
 
-        val centerNode = rememberNode(engine)
+       Image(
+           painter = painterResource(id = R.drawable.ursa),
+           contentDescription = null,
+           contentScale = ContentScale.Crop,
+           modifier = Modifier.fillMaxSize()
+       )
 
-        val cameraNode = rememberCameraNode(engine) {
-            position = Position(z=2f, y =2f)
-            lookAt(centerNode)
-            centerNode.addChildNode(this)
-        }
+        var date by remember { mutableStateOf(LocalDateTime.now()) }
+        var isPlaying by remember { mutableStateOf(true) }
 
-        val solar = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/sun.glb"
-                ),
-                scaleToUnits = 0.25f,
-                centerOrigin = Position(x = 0.0f, y = 0.0f, z = 0.0f)
-            )
-        }
+        val speedOptions = remember { listOf(3, 6, 10, 16, 24) }
+        var selectedSpeed by remember { mutableIntStateOf(1) }
 
-        val earth = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/earth.glb"
-                ),
-                scaleToUnits = 0.25f,
-                centerOrigin = Position(x = 1f)
-            )
-        }
-
-        val mars = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/mars.glb"
-                ),
-                scaleToUnits = 0.25f,
-                centerOrigin = Position(x = 2f)
-            )
-        }
-
-
-
-        //solar.addChildNode(earth)
-        //centerNode.addChildNode(solar)
-
-
-        val cameraTransition = rememberInfiniteTransition(label = "CameraTransition")
-        val cameraRotation by cameraTransition.animateRotation(
-            initialValue = Rotation(y = 0.0f),
-            targetValue = Rotation(y = 360.0f),
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 7.seconds.toInt(DurationUnit.MILLISECONDS))
-            )
-        )
-
-        Scene(
-            modifier = Modifier.fillMaxSize(),
-            engine = engine,
-            modelLoader = modelLoader,
-            cameraNode = cameraNode,
-            cameraManipulator = rememberCameraManipulator(
-                orbitHomePosition = cameraNode.worldPosition,
-                targetPosition = centerNode.worldPosition
-            ),
-            childNodes = listOf(centerNode, solar, earth, mars),
-            /*environment = environmentLoader.createHDREnvironment(
-                assetFileLocation = "environments/satara_night_2k.hdr",
-            )!!,*/
-            onFrame = {
-                //centerNode.rotation = cameraRotation
-                //cameraNode.lookAt(centerNode)
-            },
-            onGestureListener = rememberOnGestureListener(
-                onDoubleTap = { _, node ->
-                    node?.apply {
-                        scale *= 2.0f
-                    }
+        LaunchedEffect(isPlaying) {
+            if (isPlaying) {
+                while (true) {
+                    delay(100)
+                    date = date.plusHours(speedOptions[selectedSpeed].toLong())
                 }
-            )
+            }
+        }
+
+        Scene3D(
+            date = date,
+            onDateChanged = {
+                date = date.minusDays(it.toLong())
+            }
         )
-        /*Image(
+
+        Row(
             modifier = Modifier
-                .width(192.dp)
-                .align(Alignment.BottomEnd)
-                .navigationBarsPadding()
-                .padding(16.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(
-                        alpha = 0.5f
-                    ),
-                    shape = MaterialTheme.shapes.medium
-                )
-                .padding(8.dp),
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo"
-        )
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = R.string.app_name)
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                titleContentColor = MaterialTheme.colorScheme.onPrimary
+                .padding(top = 8.dp)
+                .wrapContentSize()
+                .align(Alignment.TopCenter)
+                .border(1.dp, Color.White, RoundedCornerShape(12.dp))
+        ) {
+
+            Text(
+                text = "Speed: ${speedOptions[selectedSpeed]*10} hrs/s",
+                style = AppTheme.typography.bold14,
+                color = Color.White,
+                modifier = Modifier.padding(8.dp)
+            )
+
+            Text(
+                text = "Date: ${formatter.format(date)}",
+                style = AppTheme.typography.bold14,
+                color = Color.White,
+                modifier = Modifier.padding(8.dp)
 
             )
-        )*/
+
+        }
+
+
+
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .wrapContentSize()
+                .align(Alignment.BottomCenter)
+                .border(1.dp, Color.White, RoundedCornerShape(12.dp))
+        ) {
+            IconButton(onClick = {
+                selectedSpeed = (selectedSpeed-1).coerceAtLeast(0)
+            }) {
+                Icon(
+                    painterResource(id = R.drawable.ic_slower),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            IconToggleButton(
+                checked = isPlaying,
+                onCheckedChange = { isPlaying = it}
+            ) {
+                Icon(
+                    painterResource(id = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            IconButton(onClick = {
+                selectedSpeed = (selectedSpeed+1).coerceAtMost(speedOptions.size-1)
+            }) {
+                Icon(
+                    painterResource(id = R.drawable.ic_faster),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+        }
     }
 }

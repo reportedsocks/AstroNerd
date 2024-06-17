@@ -36,7 +36,8 @@ fun AsteroidsListDetail(
         value = navigator.scaffoldValue,
         listPane = {
             AsteroidsListPane(
-                onAsteroidSelected = { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, content = it) }
+                onAsteroidSelected = { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, content = it) },
+                onVisualizationClick = onVisualizationClick
             )
 
         },

@@ -18,9 +18,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -44,6 +46,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.antsyferov.astronerd.R
 import com.antsyferov.astronerd.ui.composables.AsteroidCard
 import com.antsyferov.astronerd.ui.composables.molecule.FilterChip
+import com.antsyferov.astronerd.ui.composables.molecule.PrimaryFAB
 import com.antsyferov.astronerd.ui.composables.template.AsteroidCardShimmer
 import com.antsyferov.astronerd.ui.theme.AppTheme
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +56,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AsteroidsListPane(
     viewModel: AsteroidsListViewModel = hiltViewModel(),
-    onAsteroidSelected: (String) -> Unit
+    onAsteroidSelected: (String) -> Unit,
+    onVisualizationClick: () -> Unit,
 ) {
 
     val asteroids = viewModel.asteroidsFlow.collectAsLazyPagingItems(Dispatchers.IO)
@@ -82,117 +86,131 @@ fun AsteroidsListPane(
         )
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = AppTheme.colors.background
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            val scrollState = rememberLazyListState()
-
-            LaunchedEffect(asteroids.loadState.append.endOfPaginationReached) {
-                if (asteroids.loadState.append.endOfPaginationReached && state.loading == LoadingState.Done) {
-                    viewModel.loadNextPage()
-                }
-            }
-            Column {
-
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Filters:",
-                    style = AppTheme.typography.semibold16,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                FlowRow(
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.padding(horizontal = 16.dp).animateContentSize()
-                ) {
-                    for (filter in state.filters) {
-                        when(filter) {
-                            is Filter.Dangerous -> {
-                                FilterChip(title = "Is dangerous:", value = filter.isDangerous.toString()) {
-                                    viewModel.removeFilter(filter)
-                                }
-                            }
-                            is Filter.Name -> {
-                                FilterChip(title = "Name:", value = filter.name) {
-                                    viewModel.removeFilter(filter)
-                                }
-                            }
-                            is Filter.Orbiting -> {
-                                FilterChip(title = "Orbiting body:", value = filter.body) {
-                                    viewModel.removeFilter(filter)
-                                }
-                            }
-                            is Filter.Date -> {
-                                FilterChip(title = "Close approach:", value = filter.date) {
-                                    viewModel.removeFilter(filter)
-                                }
-                            }
-                            is Filter.Diameter -> {
-                                FilterChip(
-                                    title = "Diameter:",
-                                    value = stringResource(id = R.string.diameter_range, filter.range.start, filter.range.endInclusive)
-                                ) {
-                                    viewModel.removeFilter(filter)
-                                }
-                            }
-                        }
-                    }
-
-                    FilterChip(isAdd = true) {
-                        showBottomSheet = true
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                LazyColumn(
-                    state = scrollState
-                ) {
-                    items(asteroids.itemCount, key = { i -> asteroids[i]?.id ?: ""}) { index ->
-                        asteroids[index]?.let {
-                            AsteroidCard(
-                                diameterUnits = "km",
-                                name = it.name,
-                                isDangerous = it.isPotentiallyHazardousAsteroid,
-                                diameterMin = it.estimatedDiameter.kilometers.min,
-                                diameterMax = it.estimatedDiameter.kilometers.max,
-                                orbitingBody = it.closeApproachData?.orbitingBody ?: "N/A",
-                                closeApproach = it.closeApproachData?.closeApproachDate ?:"N/A",
-                                onCardClick = { onAsteroidSelected.invoke(it.id) }
-                            )
-                        }
-                    }
-
-                    if (!scrollState.canScrollForward || state.loading != LoadingState.Done) {
-                        item {
-                            AsteroidCardShimmer()
-                        }
-                    }
-
-                }
-
-            }
-
-
-            if (scrollState.canScrollBackward) {
-                IconButton(onClick = { coroutineScope.launch {
-                    scrollState.animateScrollToItem(0, 0)
-                } },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.BottomEnd)
-                        .clip(CircleShape)
-                        .background(Color.Black)
-
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
-            }
+    Scaffold(
+        floatingActionButton = {
+            PrimaryFAB(
+                iconRes = R.drawable.ic_ar,
+                onFabClick = onVisualizationClick,
+                elevation = FloatingActionButtonDefaults.elevation(0.dp)
+            )
         }
+    ) { padding ->
+        Surface(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            color = AppTheme.colors.background
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                val scrollState = rememberLazyListState()
 
+                LaunchedEffect(asteroids.loadState.append.endOfPaginationReached) {
+                    if (asteroids.loadState.append.endOfPaginationReached && state.loading == LoadingState.Done) {
+                        viewModel.loadNextPage()
+                    }
+                }
+                Column {
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Filters:",
+                        style = AppTheme.typography.semibold16,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    FlowRow(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .animateContentSize()
+                    ) {
+                        for (filter in state.filters) {
+                            when(filter) {
+                                is Filter.Dangerous -> {
+                                    FilterChip(title = "Is dangerous:", value = filter.isDangerous.toString()) {
+                                        viewModel.removeFilter(filter)
+                                    }
+                                }
+                                is Filter.Name -> {
+                                    FilterChip(title = "Name:", value = filter.name) {
+                                        viewModel.removeFilter(filter)
+                                    }
+                                }
+                                is Filter.Orbiting -> {
+                                    FilterChip(title = "Orbiting body:", value = filter.body) {
+                                        viewModel.removeFilter(filter)
+                                    }
+                                }
+                                is Filter.Date -> {
+                                    FilterChip(title = "Close approach:", value = filter.date) {
+                                        viewModel.removeFilter(filter)
+                                    }
+                                }
+                                is Filter.Diameter -> {
+                                    FilterChip(
+                                        title = "Diameter:",
+                                        value = stringResource(id = R.string.diameter_range, filter.range.start, filter.range.endInclusive)
+                                    ) {
+                                        viewModel.removeFilter(filter)
+                                    }
+                                }
+                            }
+                        }
+
+                        FilterChip(isAdd = true) {
+                            showBottomSheet = true
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyColumn(
+                        state = scrollState
+                    ) {
+                        items(asteroids.itemCount, key = { i -> asteroids[i]?.id ?: ""}) { index ->
+                            asteroids[index]?.let {
+                                AsteroidCard(
+                                    diameterUnits = "km",
+                                    name = it.name,
+                                    isDangerous = it.isPotentiallyHazardousAsteroid,
+                                    diameterMin = it.estimatedDiameter.kilometers.min,
+                                    diameterMax = it.estimatedDiameter.kilometers.max,
+                                    orbitingBody = it.closeApproachData?.orbitingBody ?: "N/A",
+                                    closeApproach = it.closeApproachData?.closeApproachDate ?:"N/A",
+                                    onCardClick = { onAsteroidSelected.invoke(it.id) }
+                                )
+                            }
+                        }
+
+                        if (!scrollState.canScrollForward || state.loading != LoadingState.Done) {
+                            item {
+                                AsteroidCardShimmer()
+                            }
+                        }
+
+                    }
+
+                }
+
+
+                if (scrollState.canScrollBackward) {
+                    IconButton(onClick = { coroutineScope.launch {
+                        scrollState.animateScrollToItem(0, 0)
+                    } },
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomEnd)
+                            .clip(CircleShape)
+                            .background(Color.Black)
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+
+        }
     }
+
+
 }

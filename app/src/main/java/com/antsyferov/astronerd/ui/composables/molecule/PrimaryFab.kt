@@ -4,9 +4,12 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,27 +21,23 @@ import com.antsyferov.astronerd.ui.theme.AppTheme
 @Composable
 fun PrimaryFAB(
     modifier: Modifier = Modifier,
-    title: String,
     elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(6.dp),
     @DrawableRes iconRes: Int,
     onFabClick: () -> Unit
 ) {
-    ExtendedFloatingActionButton(
+    FloatingActionButton(
         onClick = onFabClick,
-        text = {
-            Text(text = title, style = AppTheme.typography.regular16)
-        },
-        icon = {
-            Image(
-                painter = painterResource(id = iconRes),
-                colorFilter = ColorFilter.tint(AppTheme.colors.white),
-                contentDescription = null,
-                modifier = Modifier.size(26.dp)
-            )
-        },
         elevation = elevation,
         containerColor = AppTheme.colors.primary,
         contentColor = AppTheme.colors.white,
-        modifier = modifier.height(60.dp)
-    )
+        shape = CircleShape,
+        modifier = modifier.size(60.dp)
+    ) {
+        Icon(
+            painter =painterResource(id = iconRes) ,
+            contentDescription = null,
+            tint = AppTheme.colors.white,
+            modifier = Modifier.size(30.dp)
+        )
+    }
 }

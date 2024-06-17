@@ -200,14 +200,13 @@ fun DetailsMainContent(
                 exit = fadeOut()
             ) {
                 PrimaryFAB(
-                    title = "3D",
-                    iconRes = R.drawable.ic_compare_arrow,
+                    iconRes = R.drawable.ic_ar,
                     onFabClick = onVisualizationClick,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp)
                 )
             }
         },
-        floatingActionButtonPosition = FabPosition.Center
+        floatingActionButtonPosition = FabPosition.End
     ) {
         Column(
             modifier = Modifier
