@@ -51,10 +51,8 @@ fun Scene3D(
 ) {
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
-    val environmentLoader = rememberEnvironmentLoader(engine)
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
-    val density = LocalDensity.current
 
     var moveStart by remember { mutableIntStateOf(0) }
     val centerNode = rememberNode(engine)
@@ -191,30 +189,7 @@ fun Scene3D(
         mainLightNode = rememberMainLightNode(engine) {
             position = Position(x = 0.0f, y = 0.0f, z = 0.0f)
         },
-        /*renderer = rememberRenderer(engine = engine).apply {
-            this.displayInfo.
-
-            this.clearOptions = Renderer.ClearOptions().apply { clear = true }
-        },*/
         childNodes = listOf(centerNode, sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune),
-        /*environment = environmentLoader.createHDREnvironment(
-            assetFileLocation = "environments/satara_night_2k.hdr",
-            //indirectLightSpecularFilter = false,
-        )!!,*/
-        /*environment = environmentLoader.createEnvironment(),
-        onViewCreated = {
-            this.scene.skybox = null
-        },*/
-
-        /*scene = rememberScene(engine = engine).apply {
-            val environment = IndirectLight.Builder()
-                .build(engine)
-                 indirectLight = environment
-        },*/
-        onFrame = {
-            //centerNode.rotation = cameraRotation
-            //cameraNode.lookAt(centerNode)
-        },
         onGestureListener = rememberOnGestureListener(
             onSingleTapConfirmed = { e, node ->
 
@@ -225,13 +200,6 @@ fun Scene3D(
                 Toast.makeText(context, "${node?.name} Node long clicked", Toast.LENGTH_SHORT).show()
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             }
-            /*onDoubleTap = { _, node ->
-                node?.apply {
-                    this.rotation
-                    scale *= 2.0f
-                }
-            },*/
-            //onRotate = {detector, e, node ->  }
         ),
         onTouchEvent = {e, hit ->
             var isHandled = false
@@ -254,27 +222,6 @@ fun Scene3D(
             }
 
             isHandled
-        },
-        /*environment = rememberEnvironment(engine ) {
-            Environment(
-                indirectLight = IndirectLight.Builder()
-                    .intensity(30000f)
-                    .build(engine),
-                skybox = Skybox.Builder()
-
-                    .color(255f, 10f, 10f, 1.0f)
-                    .build(engine)
-            )
-        }*/
-        onViewCreated = {
-            //alpha = 0f
-            //this.uiHelper.isOpaque = false
-            /*environment.skybox= skybox?.apply {
-                setColor(2f, 6f, 33f, 0f)
-            }
-            skybox = skybox?.apply {
-                setColor(2f, 6f, 33f, 0f)
-            }*/
         },
         isOpaque = false
     )
