@@ -18,4 +18,6 @@
     <string name="unit_astronomical">AU</string>
     <string name="toast_details_compare_error">You need at least 2 asteroids</string>
     <string name="notification_title_compare_error">So far, there is nothing to compare this asteroid with</string>
+    <string name="point_your_phone_down">Point your phone down at an empty space, and move it around slowly</string>
+    <string name="tap_anywhere_to_add_model">Tap anywhere to add model</string>
 </resources>

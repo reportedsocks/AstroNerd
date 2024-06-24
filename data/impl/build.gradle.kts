@@ -41,6 +41,8 @@ dependencies {
     val paging_version = "3.3.0"
     implementation("androidx.paging:paging-runtime-ktx:$paging_version")
     implementation("androidx.paging:paging-compose:3.3.0")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
 
 kapt {

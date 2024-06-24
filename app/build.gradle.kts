@@ -102,6 +102,8 @@ dependencies {
     implementation(libs.androidx.material3.adaptive.navigation.suite.android)
 
     implementation("io.github.sceneview:sceneview:2.2.0")
+    implementation("io.github.sceneview:arsceneview:2.2.0")
+    implementation("com.google.ar:core:1.43.0")
 
 }
 

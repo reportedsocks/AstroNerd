@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.antsyferov.astronerd.ui.panes.asteroid_list_detail.AsteroidsListDetail
 import com.antsyferov.astronerd.ui.panes.favourite_asteroid_list_detail.FavouriteAsteroidsListDetail
+import com.antsyferov.astronerd.ui.panes.settings.Settings
 import com.antsyferov.astronerd.ui.panes.visualization.Visualization
 import com.antsyferov.astronerd.ui.theme.AppTheme
 
@@ -33,6 +34,9 @@ fun AppNavHost(
         }
         composable("visualization") {
             Visualization()
+        }
+        composable("settings") {
+            Settings()
         }
     }
 }

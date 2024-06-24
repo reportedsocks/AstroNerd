@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -45,7 +46,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
 
-                val navItems = listOf("Home" to Icons.Default.Home, "Favourites" to ImageVector.vectorResource(R.drawable.ic_bookmark_fill))
+                val navItems = listOf(
+                    "Home" to Icons.Default.Home,
+                    "Favourites" to ImageVector.vectorResource(R.drawable.ic_bookmark_fill),
+                    "Settings" to Icons.Default.Settings
+                )
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route

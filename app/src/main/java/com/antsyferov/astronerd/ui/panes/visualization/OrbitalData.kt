@@ -48,7 +48,7 @@ fun initializePlanetData(index: Int, orbitalPeriod: Double, initialOffset: Doubl
     return PlanetData(index, orbitalPeriod, initialOffset, distance)
 }
 
-fun calculatePlanetPosition(date: LocalDateTime, planetData: PlanetData): Triple<Double, Double, Double> {
+fun calculatePlanetPosition(date: LocalDateTime, planetData: PlanetData, rotateOrientation: Boolean): Triple<Double, Double, Double> {
     val hoursSinceEpoch = hoursSinceJ2000(date)
 
     // Calculate angular position (in radians) for the planet
@@ -60,11 +60,15 @@ fun calculatePlanetPosition(date: LocalDateTime, planetData: PlanetData): Triple
     val y = planetData.distance * sin(angle)
 
     // For simplicity, assume z = 0 (planets in xy-plane)
-    return Triple(x, y, 0.0)
+    return if (rotateOrientation) {
+        Triple(x, .0, y)
+    } else {
+        Triple(x, y, 0.0)
+    }
 }
 
 @Composable
-fun rememberOrbitalPositions(date: LocalDateTime): OrbitalData {
+fun rememberOrbitalPositions(date: LocalDateTime, rotateOrientation: Boolean = false): OrbitalData {
 
     val planetData = remember {
         val planets = listOf(
@@ -81,7 +85,7 @@ fun rememberOrbitalPositions(date: LocalDateTime): OrbitalData {
     }
 
     return remember(date) {
-        val positions = planetData.map { calculatePlanetPosition(date, it) }
+        val positions = planetData.map { calculatePlanetPosition(date, it, rotateOrientation) }
         OrbitalData(
             mercury = positions[0].let { OrbitalData.fromTriple(it) },
             venus = positions[1].let { OrbitalData.fromTriple(it) },

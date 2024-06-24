@@ -33,7 +33,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antsyferov.astronerd.R
+import com.antsyferov.astronerd.ui.panes.settings.SettingsViewModel
 import com.antsyferov.astronerd.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import java.time.LocalDate
@@ -45,7 +48,11 @@ val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
 
 @Composable
-fun Visualization() {
+fun Visualization(
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
+    val isArEnabled by viewModel.flow.collectAsStateWithLifecycle(initialValue = false)
+
     Box(modifier = Modifier.fillMaxSize()) {
 
        Image(
@@ -70,12 +77,16 @@ fun Visualization() {
             }
         }
 
-        Scene3D(
-            date = date,
-            onDateChanged = {
-                date = date.minusDays(it.toLong())
-            }
-        )
+        if (isArEnabled) {
+            ArVisualization(date)
+        } else {
+            Scene3D(
+                date = date,
+                onDateChanged = {
+                    date = date.minusDays(it.toLong())
+                }
+            )
+        }
 
         Row(
             modifier = Modifier
