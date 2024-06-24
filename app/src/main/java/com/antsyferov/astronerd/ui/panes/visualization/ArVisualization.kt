@@ -1,6 +1,7 @@
 package com.antsyferov.astronerd.ui.panes.visualization
 
 import android.view.Display.Mode
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,8 +68,8 @@ fun ArVisualization(
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
-        // The destroy calls are automatically made when their disposable effect leaves
-        // the composition or its key changes.
+        val context = LocalContext.current
+        val haptic = LocalHapticFeedback.current
         val engine = rememberEngine()
         val modelLoader = rememberModelLoader(engine)
         val materialLoader = rememberMaterialLoader(engine)
@@ -77,85 +80,15 @@ fun ArVisualization(
 
         val orbitalData = rememberOrbitalPositions(date, rotateOrientation = true)
 
-        val sun = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/sun.glb"
-                ),
-                scaleToUnits = 0.5f,
-            )
-        }
-        val mercury = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/mercury.glb"
-                ),
-                scaleToUnits = 0.2f,
-                centerOrigin = orbitalData.mercury
-            )
-        }
-        val venus = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/venus.glb"
-                ),
-                scaleToUnits = 0.3f,
-            )
-        }
-
-        val earth = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/earth.glb"
-                ),
-                scaleToUnits = 0.3f,
-            )
-        }
-
-        val mars = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/mars.glb"
-                ),
-                scaleToUnits = 0.3f,
-            )
-        }
-
-        val jupiter = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/jupiter.glb"
-                ),
-                scaleToUnits = 0.4f,
-            )
-        }
-
-        val saturn = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/saturn.glb"
-                ),
-                scaleToUnits = 0.6f,
-            )
-        }
-
-        val uranus = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/uranus.glb"
-                ),
-                scaleToUnits = 0.3f,
-            )
-        }
-
-        val neptune = rememberNode {
-            ModelNode(
-                modelInstance = modelLoader.createModelInstance(
-                    assetFileLocation = "models/neptune.glb"
-                ),
-                scaleToUnits = 0.3f,
-            )
-        }
+        val sun = rememberSun(modelLoader = modelLoader)
+        val mercury = rememberMercury(modelLoader = modelLoader)
+        val venus = rememberVenus(modelLoader = modelLoader)
+        val earth = rememberEarth(modelLoader = modelLoader)
+        val mars = rememberMars(modelLoader = modelLoader)
+        val jupiter = rememberJupiter(modelLoader = modelLoader)
+        val saturn = rememberSaturn(modelLoader = modelLoader)
+        val uranus = rememberUranus(modelLoader = modelLoader)
+        val neptune = rememberNeptune(modelLoader = modelLoader)
 
         val nodes = listOf(sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
 
@@ -216,43 +149,23 @@ fun ArVisualization(
                             childNodes += nodes
                             childNodes += createAnchorNode(
                                 engine = engine,
-                                modelLoader = modelLoader,
-                                materialLoader = materialLoader,
                                 anchor = anchor,
                                 nodes = nodes
                             )
                         }
                 }
             },
-            onSessionPaused = {
-            },
             onGestureListener = rememberOnGestureListener(
-                onSingleTapConfirmed = { motionEvent, node ->
-                    /*if (node == null) {
-                        val hitResults = frame?.hitTest(motionEvent.x, motionEvent.y)
-                        hitResults?.firstOrNull {
-                            it.isValid(
-                                depthPoint = false,
-                                point = false
-                            )
-                        }?.createAnchorOrNull()
-                            ?.let { anchor ->
-                                planeRenderer = false
-                                childNodes.map {
-                                    it.destroy()
-                                }
-                                childNodes.clear()
-                                childNodes + nodes
-                                childNodes + createAnchorNode(
-                                    engine = engine,
-                                    modelLoader = modelLoader,
-                                    materialLoader = materialLoader,
-                                    anchor = anchor,
-                                    nodes = nodes
-                                )
-                            }
-                    }*/
-                })
+                onSingleTapConfirmed = { e, node ->
+
+                    Toast.makeText(context, "${node?.name?.toPlanet()} Node clicked", Toast.LENGTH_SHORT).show()
+
+                },
+                onLongPress = { e, node ->
+                    Toast.makeText(context, "${node?.name?.toPlanet()} Node long clicked", Toast.LENGTH_SHORT).show()
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+            )
         )
         Text(
             modifier = Modifier
@@ -274,98 +187,17 @@ fun ArVisualization(
     }
 }
 
-/*
-fun createAnchorNode(
-    engine: Engine,
-    modelLoader: ModelLoader,
-    materialLoader: MaterialLoader,
-    anchor: Anchor
-): AnchorNode {
-    val anchorNode = AnchorNode(engine = engine, anchor = anchor)
-    val modelNode = ModelNode(
-        modelInstance = modelLoader.createModelInstance(kModelFile),
-        // Scale to fit in a 0.5 meters cube
-        scaleToUnits = 0.5f
-    ).apply {
-        // Model Node needs to be editable for independent rotation from the anchor rotation
-        isEditable = true
-        editableScaleRange = 0.2f..0.75f
-    }
-    val boundingBoxNode = CubeNode(
-        engine,
-        size = modelNode.extents,
-        center = modelNode.center,
-        materialInstance = materialLoader.createColorInstance(Color.White.copy(alpha = 0.5f))
-    ).apply {
-        isVisible = false
-    }
-    modelNode.addChildNode(boundingBoxNode)
-    anchorNode.addChildNode(modelNode)
-
-    listOf(modelNode, anchorNode).forEach {
-        it.onEditingChanged = { editingTransforms ->
-            boundingBoxNode.isVisible = editingTransforms.isNotEmpty()
-        }
-    }
-    return anchorNode
-}*/
 
 fun createAnchorNode(
     engine: Engine,
-    modelLoader: ModelLoader,
-    materialLoader: MaterialLoader,
     anchor: Anchor,
     nodes: List<ModelNode>
 ): AnchorNode {
-    val anchorNode = AnchorNode(engine = engine, anchor = anchor).apply {
-        //worldTransform(quaternion = Quaternion.fromEuler(0f, 0f, 90f))
-        //this.transform(quaternion = Quaternion.fromEuler(90f, 0f, 0f))
-        //this.quaternion = Quaternion.fromAxisAngle(Float3(1.0f, 1.0f, 1.0f), 45.0f)
-        //localRotation = Quaternion.axisAngle()
+    val anchorNode = AnchorNode(engine = engine, anchor = anchor)
 
-    }
-   /* val sun = ModelNode(
-        modelInstance = modelLoader.createModelInstance(
-            assetFileLocation = "models/sun.glb"
-        ),
-        scaleToUnits = 0.5f,
-    )*//*.apply {
-        // Model Node needs to be editable for independent rotation from the anchor rotation
-        isEditable = true
-        editableScaleRange = 0.2f..0.75f
-    }*/
-
-    /*val earth = ModelNode(
-        modelInstance = modelLoader.createModelInstance(
-            assetFileLocation = "models/earth.glb"
-        ),
-        scaleToUnits = 0.3f,
-    ).apply {
-        position = Position(0f,0f,0f)
-        centerOrigin(orbitalData.earth)
-    }*/
-
-    /*val boundingBoxNode = CubeNode(
-        engine,
-        size = sun.extents,
-        center = sun.center,
-        materialInstance = materialLoader.createColorInstance(Color.White.copy(alpha = 0.5f))
-    ).apply {
-        isVisible = false
-    }*/
-
-    //sun.addChildNode(boundingBoxNode)
     nodes.forEach {
         anchorNode.addChildNode(it)
     }
-    //anchorNode.addChildNode(sun)
-    //anchorNode.addChildNode(earth)
 
-
-    /*listOf(anchorNode).forEach { //sun,
-        it.onEditingChanged = { editingTransforms ->
-            boundingBoxNode.isVisible = editingTransforms.isNotEmpty()
-        }
-    }*/
     return anchorNode
 }

@@ -65,86 +65,15 @@ fun Scene3D(
 
     val orbitalData = rememberOrbitalPositions(date)
 
-    val sun = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/sun.glb"
-            ),
-            scaleToUnits = 0.5f,
-
-        ).apply { name = "Sun" }
-    }
-    val mercury = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/mercury.glb"
-            ),
-            scaleToUnits = 0.2f,
-            centerOrigin = orbitalData.mercury
-        ).apply { name = "Mercury" }
-    }
-    val venus = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/venus.glb"
-            ),
-            scaleToUnits = 0.3f,
-        ).apply { name = "Venus" }
-    }
-
-    val earth = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/earth.glb"
-            ),
-            scaleToUnits = 0.3f,
-        ).apply { name = "Earth" }
-    }
-
-    val mars = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/mars.glb"
-            ),
-            scaleToUnits = 0.3f,
-        ).apply { name = "Mars" }
-    }
-
-    val jupiter = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/jupiter.glb"
-            ),
-            scaleToUnits = 0.4f,
-        ).apply { name = "Jupiter" }
-    }
-
-    val saturn = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/saturn.glb"
-            ),
-            scaleToUnits = 0.6f,
-        ).apply { name = "Saturn" }
-    }
-
-    val uranus = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/uranus.glb"
-            ),
-            scaleToUnits = 0.3f,
-        ).apply { name = "Uranus" }
-    }
-
-    val neptune = rememberNode {
-        ModelNode(
-            modelInstance = modelLoader.createModelInstance(
-                assetFileLocation = "models/neptune.glb"
-            ),
-            scaleToUnits = 0.3f,
-        ).apply { name = "Neptune" }
-    }
+    val sun = rememberSun(modelLoader = modelLoader)
+    val mercury = rememberMercury(modelLoader = modelLoader)
+    val venus = rememberVenus(modelLoader = modelLoader)
+    val earth = rememberEarth(modelLoader = modelLoader)
+    val mars = rememberMars(modelLoader = modelLoader)
+    val jupiter = rememberJupiter(modelLoader = modelLoader)
+    val saturn = rememberSaturn(modelLoader = modelLoader)
+    val uranus = rememberUranus(modelLoader = modelLoader)
+    val neptune = rememberNeptune(modelLoader = modelLoader)
 
     LaunchedEffect(orbitalData) {
         mercury.position = Position(0f,0f,0f)
@@ -193,11 +122,11 @@ fun Scene3D(
         onGestureListener = rememberOnGestureListener(
             onSingleTapConfirmed = { e, node ->
 
-                Toast.makeText(context, "${node?.name} Node clicked", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "${node?.name?.toPlanet()} Node clicked", Toast.LENGTH_SHORT).show()
 
             },
             onLongPress = { e, node ->
-                Toast.makeText(context, "${node?.name} Node long clicked", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "${node?.name?.toPlanet()} Node long clicked", Toast.LENGTH_SHORT).show()
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             }
         ),
