@@ -7,4 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="sun">#FF9800</color>
+    <color name="mercury">#515252</color>
+    <color name="venus">#BB9761</color>
+    <color name="earth">#045AC1</color>
+    <color name="mars">#DC3903</color>
+    <color name="jupiter">#D5BBAD</color>
+    <color name="saturn">#DEB6A1</color>
+    <color name="uranus">#A3B8D2</color>
+    <color name="neptune">#033571</color>
 </resources>

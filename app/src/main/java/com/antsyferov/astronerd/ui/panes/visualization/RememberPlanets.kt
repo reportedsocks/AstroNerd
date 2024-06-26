@@ -17,6 +17,20 @@ enum class Planet {
     NEPTUNE
 }
 
+fun Planet.toCameraPosition() : CameraPosition {
+    return when(this) {
+        Planet.SUN -> CameraPosition.Tilted
+        Planet.MERCURY -> CameraPosition.MERCURY
+        Planet.VENUS -> CameraPosition.VENUS
+        Planet.EARTH -> CameraPosition.EARTH
+        Planet.MARS -> CameraPosition.MARS
+        Planet.JUPITER -> CameraPosition.JUPITER
+        Planet.SATURN -> CameraPosition.SATURN
+        Planet.URANUS -> CameraPosition.URANUS
+        Planet.NEPTUNE -> CameraPosition.NEPTUNE
+    }
+}
+
 fun String.toPlanet(): Planet {
     return Planet.valueOf(this)
 }

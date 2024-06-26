@@ -2,9 +2,13 @@ package com.antsyferov.astronerd.ui.panes.visualization
 
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.TransitionState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -22,7 +26,9 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import com.google.android.filament.IndirectLight
 import com.google.android.filament.Renderer
 import com.google.android.filament.Skybox
+import com.google.android.filament.Viewport
 import io.github.sceneview.Scene
+import io.github.sceneview.animation.Transition.animatePosition
 import io.github.sceneview.animation.Transition.animateRotation
 import io.github.sceneview.environment.Environment
 import io.github.sceneview.math.Position
@@ -48,6 +54,9 @@ import kotlin.time.DurationUnit
 fun Scene3D(
     date: LocalDateTime,
     onDateChanged: (Int) -> Unit,
+    camera: CameraPosition,
+    onChangeCameraToPlane: (Planet) -> Unit,
+    onShowDetails: (Planet) -> Unit
 ) {
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
@@ -58,12 +67,25 @@ fun Scene3D(
     val centerNode = rememberNode(engine)
 
     val cameraNode = rememberCameraNode(engine) {
-        position = Position(z=5f, y=-5f)
-        lookAt(centerNode)
         centerNode.addChildNode(this)
     }
 
-    val orbitalData = rememberOrbitalPositions(date)
+    /*LaunchedEffect(camera) {
+        cameraNode.focalLength = if (camera.isPlanet) 50.0 else 28.0
+    }*/
+
+    val orbitalData = rememberOrbitalPositions(date, rotateOrientation = camera.isPlanet)
+    camera.setOrbitalData(orbitalData)
+    val transitionState = remember {MutableTransitionState(CameraPosition.Tilted) }
+    transitionState.targetState = camera
+
+    val cameraTransition = rememberTransition(
+        label = "CameraTransition",
+        transitionState = transitionState
+    )
+    val cameraPosition by cameraTransition.animatePosition(
+        { tween(3000) }
+    ) { it.position }
 
     val sun = rememberSun(modelLoader = modelLoader)
     val mercury = rememberMercury(modelLoader = modelLoader)
@@ -94,17 +116,6 @@ fun Scene3D(
         neptune.centerOrigin(orbitalData.neptune)
     }
 
-
-    val cameraTransition = rememberInfiniteTransition(label = "CameraTransition")
-    val cameraRotation by cameraTransition.animateRotation(
-        initialValue = Rotation(y = 0.0f),
-        targetValue = Rotation(y = 360.0f),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 7.seconds.toInt(DurationUnit.MILLISECONDS))
-        )
-    )
-
-
     Scene(
         modifier = Modifier
             .fillMaxSize(),
@@ -118,16 +129,22 @@ fun Scene3D(
         mainLightNode = rememberMainLightNode(engine) {
             position = Position(x = 0.0f, y = 0.0f, z = 0.0f)
         },
+        onFrame = {
+            cameraNode.position = cameraPosition
+            cameraNode.lookAt(centerNode)
+        },
         childNodes = listOf(centerNode, sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune),
         onGestureListener = rememberOnGestureListener(
             onSingleTapConfirmed = { e, node ->
-
-                Toast.makeText(context, "${node?.name?.toPlanet()} Node clicked", Toast.LENGTH_SHORT).show()
-
+                node?.name?.let {
+                    onShowDetails.invoke(it.toPlanet())
+                }
             },
             onLongPress = { e, node ->
-                Toast.makeText(context, "${node?.name?.toPlanet()} Node long clicked", Toast.LENGTH_SHORT).show()
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                node?.name?.let {
+                    onChangeCameraToPlane.invoke(it.toPlanet())
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
             }
         ),
         onTouchEvent = {e, hit ->
