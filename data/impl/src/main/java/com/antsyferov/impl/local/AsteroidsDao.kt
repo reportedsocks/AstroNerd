@@ -13,7 +13,7 @@ interface AsteroidsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(asteroids: List<AsteroidEntity>)
 
-    @Query("SELECT * FROM asteroids")
+    @Query("SELECT * FROM asteroids WHERE NOT id=''")
     fun pagingSource(): PagingSource<Int, AsteroidEntity>
 
     @Query("SELECT MAX(km_estimated_diameter_max) as max, MIN(km_estimated_diameter_min) as min FROM asteroids")

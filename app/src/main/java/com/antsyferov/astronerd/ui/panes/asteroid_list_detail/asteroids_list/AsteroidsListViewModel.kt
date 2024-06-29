@@ -56,7 +56,9 @@ class AsteroidsListViewModel @Inject constructor(
         .flow
         .cachedIn(viewModelScope)
         .combine(stateFlow) { pagingData, state ->
-            pagingData.filter { filter(it, state.filters) }
+            pagingData
+                .filter { it.id.isNotEmpty() }
+                .filter { filter(it, state.filters) }
         }
         .onEach { _ ->
             _stateFlow.update { it.copy(loading = LoadingState.Done) }

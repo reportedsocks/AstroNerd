@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -51,6 +52,7 @@ import com.antsyferov.astronerd.ui.composables.template.AsteroidCardShimmer
 import com.antsyferov.astronerd.ui.theme.AppTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -163,7 +165,8 @@ fun AsteroidsListPane(
                     LazyColumn(
                         state = scrollState
                     ) {
-                        items(asteroids.itemCount, key = { i -> asteroids[i]?.id ?: ""}) { index ->
+
+                        items(asteroids.itemCount, key = { i -> asteroids[i]?.id ?: UUID.randomUUID()}) { index ->
                             asteroids[index]?.let {
                                 AsteroidCard(
                                     diameterUnits = "km",
