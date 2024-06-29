@@ -51,6 +51,7 @@ import io.github.sceneview.node.CubeNode
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.rememberCollisionSystem
 import io.github.sceneview.rememberEngine
+import io.github.sceneview.rememberMainLightNode
 import io.github.sceneview.rememberMaterialLoader
 import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNode
@@ -59,11 +60,11 @@ import io.github.sceneview.rememberOnGestureListener
 import io.github.sceneview.rememberView
 import java.time.LocalDateTime
 
-private const val kModelFile = "models/damaged_helmet.glb"
 
 @Composable
 fun ArVisualization(
-    date: LocalDateTime
+    date: LocalDateTime,
+    onShowDetails: (Planet) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -124,6 +125,9 @@ fun ArVisualization(
             view = view,
             modelLoader = modelLoader,
             collisionSystem = collisionSystem,
+            mainLightNode = rememberMainLightNode(engine) {
+                position = Position(x = 0.0f, y = 0.0f, z = 0.0f)
+            },
             sessionConfiguration = { session, config ->
                 config.depthMode =
                     when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
@@ -157,33 +161,30 @@ fun ArVisualization(
             },
             onGestureListener = rememberOnGestureListener(
                 onSingleTapConfirmed = { e, node ->
-
-                    Toast.makeText(context, "${node?.name?.toPlanet()} Node clicked", Toast.LENGTH_SHORT).show()
-
+                    node?.name?.toPlanet()?.let(onShowDetails)
                 },
                 onLongPress = { e, node ->
-                    Toast.makeText(context, "${node?.name?.toPlanet()} Node long clicked", Toast.LENGTH_SHORT).show()
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    /*Toast.makeText(context, "${node?.name?.toPlanet()} Node long clicked", Toast.LENGTH_SHORT).show()
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)*/
                 }
             )
         )
-        Text(
-            modifier = Modifier
-                .systemBarsPadding()
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 28.sp,
-            color = Color.White,
-            text = trackingFailureReason?.let {
-                it.getDescription(LocalContext.current)
-            } ?: if (childNodes.isEmpty()) {
-                stringResource(R.string.point_your_phone_down)
-            } else {
-                stringResource(R.string.tap_anywhere_to_add_model)
-            }
-        )
+        if (childNodes.isEmpty() ||trackingFailureReason != null)  {
+            Text(
+                modifier = Modifier
+                    .systemBarsPadding()
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(start = 32.dp, end = 32.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 28.sp,
+                color = Color.White,
+                text = trackingFailureReason?.getDescription(LocalContext.current) ?:
+                    stringResource(R.string.point_your_phone_down)
+
+            )
+        }
+
     }
 }
 

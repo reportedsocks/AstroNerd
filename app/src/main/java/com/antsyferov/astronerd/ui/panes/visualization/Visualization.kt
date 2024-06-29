@@ -121,7 +121,13 @@ fun Visualization(
         }
 
         if (isArEnabled) {
-            ArVisualization(date)
+            ArVisualization(
+                date = date,
+                onShowDetails = {
+                    clickedPlanet = it
+                    isSheetVisible = true
+                }
+            )
         } else {
             Scene3D(
                 date = date,
