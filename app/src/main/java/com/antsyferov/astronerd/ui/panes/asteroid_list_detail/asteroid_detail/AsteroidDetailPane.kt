@@ -57,7 +57,7 @@ fun AsteroidDetailsPane(
     viewModel: AsteroidsDetailsViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     onSBDClick: (String) -> Unit,
-    onVisualizationClick: () -> Unit
+    onVisualizationClick: (String) -> Unit
 ) {
     if (asteroidId != null) {
         LaunchedEffect(asteroidId) {
@@ -82,8 +82,8 @@ fun AsteroidDetailsPane(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-            .fillMaxSize()
-            .background(AppTheme.colors.background)
+                .fillMaxSize()
+                .background(AppTheme.colors.background)
         ) {
             Text(
                 text = "Select an asteroid to inspect details"
@@ -100,7 +100,7 @@ private fun DetailsScreenComposable(
     onBackClick: () -> Unit,
     onSaveClick: (value: Boolean) -> Unit,
     isSavedAsteroid: Boolean,
-    onVisualizationClick: () -> Unit,
+    onVisualizationClick: (String) -> Unit,
     compareFabVisibility: Boolean,
     onSbdClick: (url: String) -> Unit,
     isDistanceDanger: Boolean
@@ -157,7 +157,7 @@ fun DetailsMainContent(
     onBackClick: () -> Unit,
     onSaveClick: (value: Boolean) -> Unit,
     isSavedAsteroid: Boolean,
-    onVisualizationClick: () -> Unit,
+    onVisualizationClick: (String) -> Unit,
     compareFabVisibility: Boolean,
     onSbdClick: (url: String) -> Unit,
     isDistanceDanger: Boolean
@@ -201,7 +201,7 @@ fun DetailsMainContent(
             ) {
                 PrimaryFAB(
                     iconRes = R.drawable.ic_ar,
-                    onFabClick = onVisualizationClick,
+                    onFabClick = { onVisualizationClick.invoke(data.id) },
                     elevation = FloatingActionButtonDefaults.elevation(0.dp)
                 )
             }

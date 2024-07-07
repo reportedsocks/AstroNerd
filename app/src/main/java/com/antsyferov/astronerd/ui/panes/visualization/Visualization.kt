@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,6 +68,7 @@ fun Visualization(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val isArEnabled by viewModel.flow.collectAsStateWithLifecycle(initialValue = false)
+    val areRealDistances by viewModel.realDistancesFlow.collectAsStateWithLifecycle(initialValue = null)
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetVisible by remember { mutableStateOf(false) }
@@ -89,6 +94,8 @@ fun Visualization(
         var clickedPlanet by remember {
             mutableStateOf(Planet.SUN)
         }
+
+        var showInnerBelt by remember { mutableStateOf(true) }
 
         LaunchedEffect(isPlaying) {
             if (isPlaying) {
@@ -120,15 +127,17 @@ fun Visualization(
             )
         }
 
-        if (isArEnabled) {
+        if (isArEnabled && areRealDistances != null) {
             ArVisualization(
                 date = date,
                 onShowDetails = {
                     clickedPlanet = it
                     isSheetVisible = true
-                }
+                },
+                enableRealDistances = areRealDistances!!,
+                isInnerBelt = showInnerBelt
             )
-        } else {
+        } else if (areRealDistances != null) {
             Scene3D(
                 date = date,
                 onDateChanged = {
@@ -141,7 +150,9 @@ fun Visualization(
                 onShowDetails = {
                     clickedPlanet = it
                     isSheetVisible = true
-                }
+                },
+                enableRealDistances = areRealDistances!!,
+                isInnerBelt = showInnerBelt
             )
         }
 
@@ -251,6 +262,34 @@ fun Visualization(
                     }
                 }
 
+            }
+        }
+
+        if (areRealDistances == true) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .wrapContentSize()
+                    .align(Alignment.BottomEnd)
+                    .border(1.dp, Color.White, RoundedCornerShape(12.dp))
+            ) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Show close planets",
+                    color = Color.White
+                )
+                Checkbox(
+                    checked = showInnerBelt,
+                    onCheckedChange = {
+                        showInnerBelt = it
+                    },
+                    colors = CheckboxDefaults.colors().copy(
+                        checkedBorderColor = Color.White,
+                        uncheckedBoxColor =  Color.White
+                    )
+                )
             }
         }
     }

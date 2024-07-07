@@ -12,6 +12,7 @@ class AsteroidsApi @Inject constructor(
     companion object {
         private const val BASE_URL = "https://api.nasa.gov/neo/rest"
         private const val ASTEROIDS = "/v1/feed"
+        private const val DETAILS = "/v1/neo"
     }
 
     suspend fun getAsteroids(
@@ -19,4 +20,9 @@ class AsteroidsApi @Inject constructor(
         endDate: String
     ): AsteroidsResponse =
         client.get("$BASE_URL$ASTEROIDS?start_date=$startDate&end_date=$endDate")
+
+    suspend fun getAsteroidDetails(
+        asteroidId: String
+    ): AsteroidDetailsResponse =
+        client.get("$BASE_URL$DETAILS/$asteroidId")
 }

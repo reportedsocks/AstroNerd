@@ -23,6 +23,7 @@ class DataStoreManager @Inject constructor(
     private val datastore = applicationContext.dataStore
 
     private val isAREnabledKey = booleanPreferencesKey("AR")
+    private val areRealDistancesEnabledKey = booleanPreferencesKey("real_dist")
 
     fun getIsArEnabled(): Flow<Boolean> {
         return datastore.data.map {
@@ -33,6 +34,18 @@ class DataStoreManager @Inject constructor(
     suspend fun setArEnabled(value: Boolean) {
         datastore.edit {
             it[isAREnabledKey] = value
+        }
+    }
+
+    fun getAreRealDistancesEnabled(): Flow<Boolean> {
+        return datastore.data.map {
+            it[areRealDistancesEnabledKey] ?: false
+        }
+    }
+
+    suspend fun setAreRealDistancesEnabled(value: Boolean) {
+        datastore.edit {
+            it[areRealDistancesEnabledKey] = value
         }
     }
 

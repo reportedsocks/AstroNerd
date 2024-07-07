@@ -30,6 +30,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     packaging {
@@ -66,6 +67,8 @@ dependencies {
     //implementation(project(":features"))
 
     implementation("com.google.dagger:hilt-android:2.48")
+    //implementation(libs.rendering)
+    //implementation(libs.rendering)
     kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 

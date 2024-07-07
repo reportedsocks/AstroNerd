@@ -36,110 +36,124 @@ fun String.toPlanet(): Planet {
 }
 
 @Composable
-fun rememberSun(modelLoader: ModelLoader) : ModelNode {
+fun rememberSun(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/sun.glb"
             ),
-            scaleToUnits = 0.5f,
+            scaleToUnits = if (areRealDistances) 0.4f else 0.5f,
 
             ).apply { name = Planet.SUN.name }
     }
 }
 
 @Composable
-fun rememberMercury(modelLoader: ModelLoader) : ModelNode {
+fun rememberMercury(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/mercury.glb"
             ),
-            scaleToUnits = 0.2f,
+            scaleToUnits = if (areRealDistances) 0.3f else 0.2f,
             ).apply { name = Planet.MERCURY.name }
     }
 }
 
 @Composable
-fun rememberVenus(modelLoader: ModelLoader) : ModelNode {
+fun rememberVenus(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/venus.glb"
             ),
-            scaleToUnits = 0.3f,
+            scaleToUnits = if (areRealDistances) 0.3f else 0.3f,
         ).apply { name = Planet.VENUS.name }
     }
 }
 
 @Composable
-fun rememberEarth(modelLoader: ModelLoader) : ModelNode {
+fun rememberEarth(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/earth.glb"
             ),
-            scaleToUnits = 0.3f,
-        ).apply { name = Planet.EARTH.name }
+            scaleToUnits = if (areRealDistances) 0.3f else 0.3f,
+        ).apply {
+            name = Planet.EARTH.name
+        }
     }
 }
 
 @Composable
-fun rememberMars(modelLoader: ModelLoader) : ModelNode {
+fun rememberMars(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/mars.glb"
             ),
-            scaleToUnits = 0.3f,
+            scaleToUnits = if (areRealDistances) 0.3f else 0.3f,
         ).apply { name = Planet.MARS.name }
     }
 }
 
 @Composable
-fun rememberJupiter(modelLoader: ModelLoader) : ModelNode {
+fun rememberJupiter(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/jupiter.glb"
             ),
-            scaleToUnits = 0.4f,
+            scaleToUnits = if (areRealDistances) 0.3f else 0.4f,
         ).apply { name = Planet.JUPITER.name }
     }
 }
 
 @Composable
-fun rememberSaturn(modelLoader: ModelLoader) : ModelNode {
+fun rememberSaturn(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/saturn.glb"
             ),
-            scaleToUnits = 0.6f,
+            scaleToUnits = if (areRealDistances) 0.4f else 0.6f,
         ).apply { name = Planet.SATURN.name }
     }
 }
 
 @Composable
-fun rememberUranus(modelLoader: ModelLoader) : ModelNode {
+fun rememberUranus(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/uranus.glb"
             ),
-            scaleToUnits = 0.3f,
+            scaleToUnits = if (areRealDistances) 0.3f else 0.3f,
         ).apply { name = Planet.URANUS.name }
     }
 }
 
 @Composable
-fun rememberNeptune(modelLoader: ModelLoader) : ModelNode {
+fun rememberNeptune(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
     return rememberNode {
         ModelNode(
             modelInstance = modelLoader.createModelInstance(
                 assetFileLocation = "models/neptune.glb"
             ),
-            scaleToUnits = 0.3f,
+            scaleToUnits = if (areRealDistances) 0.3f else 0.3f,
         ).apply { name = Planet.NEPTUNE.name }
+    }
+}
+
+@Composable
+fun rememberAsteroid(modelLoader: ModelLoader) : ModelNode {
+    return rememberNode {
+        ModelNode(
+            modelInstance = modelLoader.createModelInstance(
+                assetFileLocation = "models/bennu.glb"//"models/vesta.glb"
+            ),
+            scaleToUnits = 0.2f,
+        )
     }
 }

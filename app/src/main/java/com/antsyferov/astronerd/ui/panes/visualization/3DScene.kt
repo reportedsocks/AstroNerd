@@ -56,7 +56,9 @@ fun Scene3D(
     onDateChanged: (Int) -> Unit,
     camera: CameraPosition,
     onChangeCameraToPlane: (Planet) -> Unit,
-    onShowDetails: (Planet) -> Unit
+    onShowDetails: (Planet) -> Unit,
+    enableRealDistances: Boolean,
+    isInnerBelt: Boolean
 ) {
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
@@ -68,13 +70,14 @@ fun Scene3D(
 
     val cameraNode = rememberCameraNode(engine) {
         centerNode.addChildNode(this)
+        position  = CameraPosition.Top.position
     }
 
-    /*LaunchedEffect(camera) {
+    LaunchedEffect(camera) {
         cameraNode.focalLength = if (camera.isPlanet) 50.0 else 28.0
-    }*/
+    }
 
-    val orbitalData = rememberOrbitalPositions(date, rotateOrientation = camera.isPlanet)
+    val orbitalData = rememberOrbitalPositions(date, rotateOrientation = camera.isPlanet, enableRealDistances, isInnerBelt)
     camera.setOrbitalData(orbitalData)
     val transitionState = remember {MutableTransitionState(CameraPosition.Tilted) }
     transitionState.targetState = camera
@@ -87,15 +90,15 @@ fun Scene3D(
         { tween(3000) }
     ) { it.position }
 
-    val sun = rememberSun(modelLoader = modelLoader)
-    val mercury = rememberMercury(modelLoader = modelLoader)
-    val venus = rememberVenus(modelLoader = modelLoader)
-    val earth = rememberEarth(modelLoader = modelLoader)
-    val mars = rememberMars(modelLoader = modelLoader)
-    val jupiter = rememberJupiter(modelLoader = modelLoader)
-    val saturn = rememberSaturn(modelLoader = modelLoader)
-    val uranus = rememberUranus(modelLoader = modelLoader)
-    val neptune = rememberNeptune(modelLoader = modelLoader)
+    val sun = rememberSun(modelLoader = modelLoader, enableRealDistances)
+    val mercury = rememberMercury(modelLoader = modelLoader, enableRealDistances)
+    val venus = rememberVenus(modelLoader = modelLoader, enableRealDistances)
+    val earth = rememberEarth(modelLoader = modelLoader, enableRealDistances)
+    val mars = rememberMars(modelLoader = modelLoader, enableRealDistances)
+    val jupiter = rememberJupiter(modelLoader = modelLoader, enableRealDistances)
+    val saturn = rememberSaturn(modelLoader = modelLoader, enableRealDistances)
+    val uranus = rememberUranus(modelLoader = modelLoader, enableRealDistances)
+    val neptune = rememberNeptune(modelLoader = modelLoader, enableRealDistances)
 
     LaunchedEffect(orbitalData) {
         mercury.position = Position(0f,0f,0f)
@@ -116,6 +119,17 @@ fun Scene3D(
         neptune.centerOrigin(orbitalData.neptune)
     }
 
+    val childNodes = if (enableRealDistances) {
+        if (isInnerBelt) {
+            listOf(centerNode, sun, mercury, venus, earth, mars)
+        } else {
+            listOf(centerNode, sun, jupiter, saturn, uranus, neptune)
+        }
+
+    } else {
+        listOf(centerNode, sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
+    }
+
     Scene(
         modifier = Modifier
             .fillMaxSize(),
@@ -133,7 +147,7 @@ fun Scene3D(
             cameraNode.position = cameraPosition
             cameraNode.lookAt(centerNode)
         },
-        childNodes = listOf(centerNode, sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune),
+        childNodes = childNodes,
         onGestureListener = rememberOnGestureListener(
             onSingleTapConfirmed = { e, node ->
                 node?.name?.let {
@@ -149,23 +163,25 @@ fun Scene3D(
         ),
         onTouchEvent = {e, hit ->
             var isHandled = false
-            when(e.actionMasked) {
-                MotionEvent.ACTION_DOWN,
-                MotionEvent.ACTION_POINTER_DOWN,
-                -> {
-                    moveStart = e.getX(0).toInt()
+                when(e.actionMasked) {
+                    MotionEvent.ACTION_DOWN,
+                    MotionEvent.ACTION_POINTER_DOWN,
+                    -> {
+                        moveStart = e.getX(0).toInt()
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+
+                        val dest = e.getX(0).toInt()
+                        val diff = moveStart - dest
+                        moveStart =  e.getX(0).toInt()
+
+                        onDateChanged.invoke(diff)
+
+                        isHandled = true
+                    }
                 }
-                MotionEvent.ACTION_MOVE -> {
 
-                    val dest = e.getX(0).toInt()
-                    val diff = moveStart - dest
-                    moveStart =  e.getX(0).toInt()
 
-                    onDateChanged.invoke(diff)
-
-                    isHandled = true
-                }
-            }
 
             isHandled
         },

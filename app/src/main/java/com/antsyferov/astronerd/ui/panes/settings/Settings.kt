@@ -39,6 +39,7 @@ fun Settings(
         val context = LocalContext.current
         var isARSupported by remember { mutableStateOf(false) }
         val isArEnabled by viewModel.flow.collectAsStateWithLifecycle(initialValue = false)
+        val areRealDistances by viewModel.realDistancesFlow.collectAsStateWithLifecycle(initialValue = false)
 
         LaunchedEffect(Unit) {
             ArCoreApk.getInstance().checkAvailabilityAsync(context) { availability ->
@@ -92,6 +93,23 @@ fun Settings(
                         }
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Enable real scaling of distances:",
+                    style = AppTheme.typography.bold16
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Switch(
+                    checked = areRealDistances,
+                    onCheckedChange = {
+                        viewModel.setAreRealDistancesEnabled(it)
+                    }
+                )
             }
         }
     }

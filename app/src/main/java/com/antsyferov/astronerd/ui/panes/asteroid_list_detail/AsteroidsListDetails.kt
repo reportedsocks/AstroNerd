@@ -23,7 +23,8 @@ import com.antsyferov.astronerd.ui.panes.asteroid_list_detail.asteroids_list.Ast
 @Composable
 fun AsteroidsListDetail(
     modifier: Modifier = Modifier,
-    onVisualizationClick: () -> Unit
+    onVisualizationClick: () -> Unit,
+    onAsteroidVisualizationClick: (String) -> Unit
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
 
@@ -48,7 +49,7 @@ fun AsteroidsListDetail(
                 asteroidId = asteroidId,
                 onBackClick = { navigator.navigateBack() },
                 onSBDClick = { uriHandler.openUri(it) },
-                onVisualizationClick = onVisualizationClick
+                onVisualizationClick = onAsteroidVisualizationClick
             )
         },
         modifier = modifier

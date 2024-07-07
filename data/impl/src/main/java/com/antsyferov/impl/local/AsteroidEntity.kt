@@ -3,10 +3,12 @@ package com.antsyferov.impl.local
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.antsyferov.impl.network.CloseApproachData
 import com.antsyferov.impl.network.EstimatedDiameter
 import com.antsyferov.impl.network.MissDistance
+import com.antsyferov.impl.network.OrbitalData
 import com.antsyferov.impl.network.RelativeVelocity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -36,8 +38,12 @@ data class AsteroidEntity(
     @ColumnInfo("is_sentry_object")
     val isSentryObject: Boolean = false,
     @ColumnInfo("is_favourite")
-    val isFavourite: Boolean = false
+    val isFavourite: Boolean = false,
+
 ) {
+    @Ignore
+    var orbitData: OrbitalData? = null
+
     data class CloseApproachEntity(
         @ColumnInfo("close_approach_date")
         val closeApproachDate: String = "",
