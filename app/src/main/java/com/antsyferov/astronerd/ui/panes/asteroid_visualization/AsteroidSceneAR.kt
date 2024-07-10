@@ -12,10 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.antsyferov.astronerd.ui.panes.visualization.rememberAsteroid
 import com.antsyferov.astronerd.ui.panes.visualization.rememberEarth
+import com.antsyferov.astronerd.ui.panes.visualization.rememberISS
+import com.antsyferov.astronerd.ui.panes.visualization.rememberMoon
 import com.antsyferov.impl.local.AsteroidEntity
 import com.google.android.filament.Engine
 import com.google.ar.core.Anchor
@@ -64,20 +67,34 @@ fun AsteroidSceneAR(
         position = Position(0f,0f,0f)
     }
     val asteroid = rememberAsteroid(modelLoader = modelLoader)
+    val moon = rememberMoon(modelLoader = modelLoader, areRealDistances = false)
+    val iss = rememberISS(modelLoader = modelLoader, areRealDistances = false)
 
     val materialLoader = rememberMaterialLoader(engine = engine)
     val orbitNode = rememberNode(engine = engine)
+    val moonOrbitNode = rememberNode(engine)
 
     var orbitPoints by remember { mutableStateOf(emptyList<Vector3>()) }
+    var moonPoints by remember { mutableStateOf(emptyList<Vector3>()) }
+    var issPoints by remember { mutableStateOf(emptyList<Vector3>()) }
 
     LaunchedEffect(asteroidEntity.orbitData) {
         asteroidEntity.orbitData?.let {
             orbitPoints = generateOrbitPoints(it)
+            moonPoints = generateMoonPoints(it.semiMajorAxis * 0.6)
+            issPoints = generateMoonPoints(it.semiMajorAxis * 0.3)
 
             val asteroidPosition = orbitPoints[0].scaled(5f).toFloat3()
             asteroid.animatePositions(asteroid.position, asteroidPosition)
 
-            drawOrbitNode(points = orbitPoints, engine = engine, materialLoader = materialLoader, orbitNode)
+            val moonPosition = moonPoints[0].scaled(5f).toFloat3()
+            moon.animatePositions(moon.position, moonPosition)
+
+            val issPosition = issPoints[0].scaled(5f).toFloat3()
+            iss.animatePositions(iss.position, issPosition)
+
+            drawOrbitNode(points = orbitPoints, engine = engine, materialLoader = materialLoader, orbitNode, Color.Red.copy(alpha = 0.8f))
+            drawOrbitNode(points = moonPoints, engine = engine, materialLoader = materialLoader, orbitNode, Color.Blue.copy(alpha = 0.8f))
         }
 
     }
@@ -87,6 +104,16 @@ fun AsteroidSceneAR(
             val index = date.dayOfYear % orbitPoints.size
             asteroid.position = Position(0f,0f,0f)
             asteroid.centerOrigin(orbitPoints[index].scaled(5f).toFloat3())
+        }
+        if (moonPoints.isNotEmpty()) {
+            val index = date.dayOfYear % moonPoints.size
+            moon.position = Position(0f,0f,0f)
+            moon.centerOrigin(moonPoints[index].scaled(5f).toFloat3())
+        }
+        if (issPoints.isNotEmpty()) {
+            val index = date.dayOfYear % issPoints.size
+            iss.position = Position(0f,0f,0f)
+            iss.centerOrigin(issPoints[index].scaled(5f).toFloat3())
         }
     }
 
@@ -100,7 +127,7 @@ fun AsteroidSceneAR(
         }
         var frame by remember { mutableStateOf<Frame?>(null) }
 
-        val nodes = listOf(earth,asteroid, orbitNode)
+        val nodes = listOf(earth,asteroid, orbitNode, moon, moonOrbitNode, iss)
 
         ARScene(
             modifier = Modifier.fillMaxSize(),

@@ -12,10 +12,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import com.antsyferov.astronerd.ui.panes.visualization.rememberAsteroid
 import com.antsyferov.astronerd.ui.panes.visualization.rememberEarth
+import com.antsyferov.astronerd.ui.panes.visualization.rememberISS
+import com.antsyferov.astronerd.ui.panes.visualization.rememberMercury
+import com.antsyferov.astronerd.ui.panes.visualization.rememberMoon
 import com.antsyferov.impl.local.AsteroidEntity
 import io.github.sceneview.Scene
 import io.github.sceneview.animation.Transition.animatePosition
@@ -55,27 +59,41 @@ fun AsteroidScene3D(
         position = Position(0f,0f,0f)
     }
     val asteroid = rememberAsteroid(modelLoader = modelLoader)
+    val moon = rememberMoon(modelLoader = modelLoader, areRealDistances = false)
+    val iss = rememberISS(modelLoader = modelLoader, areRealDistances = false)
     val materialLoader = rememberMaterialLoader(engine = engine)
     val orbitNode = rememberNode(engine = engine)
+    val moonOrbitNode = rememberNode(engine)
 
     var orbitPoints by remember { mutableStateOf(emptyList<Vector3>()) }
+    var moonPoints by remember { mutableStateOf(emptyList<Vector3>()) }
+    var issPoints by remember { mutableStateOf(emptyList<Vector3>()) }
 
     LaunchedEffect(asteroidEntity.orbitData) {
         asteroidEntity.orbitData?.let {
             orbitPoints = generateOrbitPoints(it)
+            moonPoints = generateMoonPoints(it.semiMajorAxis * 0.6)
+            issPoints = generateMoonPoints(it.semiMajorAxis * 0.3)
 
             val asteroidPosition = orbitPoints[0].scaled(5f).toFloat3()
             asteroid.position = Position(0f,0f,0f)
             asteroid.centerOrigin(asteroidPosition)
 
-            drawOrbitNode(points = orbitPoints, engine = engine, materialLoader = materialLoader, orbitNode)
+            val moonPosition = moonPoints[0].scaled(5f).toFloat3()
+            moon.position = Position(0f,0f,0f)
+            moon.centerOrigin(moonPosition)
+
+            val issPosition = issPoints[0].scaled(5f).toFloat3()
+            iss.position = Position(0f,0f,0f)
+            iss.centerOrigin(issPosition)
+
+            drawOrbitNode(points = orbitPoints, engine = engine, materialLoader = materialLoader, orbitNode, Color.Red.copy(alpha = 0.8f))
+            drawOrbitNode(moonPoints, engine, materialLoader, moonOrbitNode, Color.Blue.copy(alpha = 0.8f))
         }
 
     }
 
     val transitionState = remember { MutableTransitionState(earth.position) }
-
-
     val asteroidTransition = rememberTransition(
         label = "CameraTransition",
         transitionState = transitionState
@@ -84,10 +102,37 @@ fun AsteroidScene3D(
         { tween(50) }
     ) { it }
 
+
+    val moonTransitionState = remember { MutableTransitionState(earth.position) }
+    val moonTransition = rememberTransition(
+        label = "MoonTransition",
+        transitionState = moonTransitionState
+    )
+    val moonPosition by moonTransition.animatePosition(
+        { tween(50) }
+    ) { it }
+
+    val issTransitionState = remember { MutableTransitionState(earth.position) }
+    val issTransition = rememberTransition(
+        label = "ISSTransition",
+        transitionState = issTransitionState
+    )
+    val issPosition by issTransition.animatePosition(
+        { tween(50) }
+    ) { it }
+
     LaunchedEffect(date) {
         if (orbitPoints.isNotEmpty()) {
             val index = date.dayOfYear % orbitPoints.size
             transitionState.targetState = orbitPoints[index].scaled(5f).toFloat3()
+        }
+        if (moonPoints.isNotEmpty()) {
+            val index = date.dayOfYear % moonPoints.size
+            moonTransitionState.targetState = moonPoints[index].scaled(5f).toFloat3()
+        }
+        if (issPoints.isNotEmpty()) {
+            val index = date.dayOfYear % issPoints.size
+            issTransitionState.targetState = issPoints[index].scaled(5f).toFloat3()
         }
     }
 
@@ -111,10 +156,13 @@ fun AsteroidScene3D(
             if (asteroidEntity.orbitData != null) {
                 asteroid.position = Position(0f,0f,0f)
                 asteroid.centerOrigin(asteroidPosition)
+                moon.position = Position(0f,0f,0f)
+                moon.centerOrigin(moonPosition)
+                iss.position = Position(0f,0f,0f)
+                iss.centerOrigin(issPosition)
             }
-
         },
-        childNodes = listOf(centerNode,earth, asteroid, orbitNode),
+        childNodes = listOf(centerNode,earth, asteroid, orbitNode, moon, iss, moonOrbitNode),
         isOpaque = false
     )
 

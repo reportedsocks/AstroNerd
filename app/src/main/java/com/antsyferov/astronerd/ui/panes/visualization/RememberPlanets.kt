@@ -157,3 +157,27 @@ fun rememberAsteroid(modelLoader: ModelLoader) : ModelNode {
         )
     }
 }
+
+@Composable
+fun rememberMoon(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
+    return rememberNode {
+        ModelNode(
+            modelInstance = modelLoader.createModelInstance(
+                assetFileLocation = "models/moon.glb"
+            ),
+            scaleToUnits = if (areRealDistances) 0.3f else 0.2f,
+        ).apply { name = Planet.MERCURY.name }
+    }
+}
+
+@Composable
+fun rememberISS(modelLoader: ModelLoader, areRealDistances: Boolean) : ModelNode {
+    return rememberNode {
+        ModelNode(
+            modelInstance = modelLoader.createModelInstance(
+                assetFileLocation = "models/iss.glb"
+            ),
+            scaleToUnits = if (areRealDistances) 0.3f else 0.2f,
+        ).apply { name = Planet.MERCURY.name }
+    }
+}

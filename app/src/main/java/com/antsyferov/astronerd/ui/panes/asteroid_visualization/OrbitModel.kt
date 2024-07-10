@@ -1,5 +1,7 @@
 package com.antsyferov.astronerd.ui.panes.asteroid_visualization
 
+import android.graphics.Color
+import com.antsyferov.impl.network.OrbitClass
 import com.antsyferov.impl.network.OrbitalData
 import com.google.android.filament.Engine
 import com.google.android.filament.MaterialInstance
@@ -18,9 +20,10 @@ fun drawOrbitNode(
     engine: Engine,
     materialLoader: MaterialLoader,
     orbitNode: Node,
+    color: androidx.compose.ui.graphics.Color
 ) {
     val material =
-        materialLoader.createColorInstance(androidx.compose.ui.graphics.Color.Blue.copy(alpha = 0.8f))
+        materialLoader.createColorInstance(color)
 
     //val points = generateOrbitPoints(orbitalData)
 
@@ -28,6 +31,40 @@ fun drawOrbitNode(
         val line = addLineBetweenPoints(points[i], points[i + 1], material, engine)
         orbitNode.addChildNode(line)
     }
+}
+
+fun generateMoonPoints(semiMajorAxis: Double): List<Vector3> {
+    return generateOrbitPoints(
+        OrbitalData(
+            orbitId = "",
+            orbitDeterminationDate = "",
+            firstObservationDate = "",
+            lastObservationDate = "",
+            dataArcInDays = 0,
+            observationsUsed = 0,
+            orbitUncertainty = "",
+            minimumOrbitIntersection = .0,
+            jupiterTisserandInvariant = .0,
+            epochOsculation = .0,
+            eccentricity = 0.0549, // Eccentricity of the Moon's orbit
+            semiMajorAxis = semiMajorAxis,//384400.0 / 149597870.7, // Semi-major axis in AU (Earth-Moon average distance in km / AU in km)
+            inclination = 5.145, // Inclination in degrees
+            ascendingNodeLongitude = 125.08, // Longitude of the ascending node in degrees
+            orbitalPeriod = 27.322, // Orbital period in days
+            perihelionDistance = 363300.0 / 149597870.7, // Perihelion distance in AU
+            perihelionArgument = 318.15, // Argument of perihelion in degrees
+            aphelionDistance = 405500.0 / 149597870.7, // Aphelion distance in AU
+            perihelionTime = .0,
+            meanAnomaly = 0.0, // Mean anomaly at epoch
+            meanMotion = 0.0366, // Mean motion in degrees/day
+            equinox = "",
+            orbitClass = OrbitClass(
+                orbitClassType = "",
+                orbitClassDescription = "",
+                orbitClassRange = ""
+            )
+        )
+    )
 }
 
 fun generateOrbitPoints(orbitalData: OrbitalData): List<Vector3> {

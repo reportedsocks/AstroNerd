@@ -110,32 +110,6 @@ fun AsteroidVisualization(
 
         Row(
             modifier = Modifier
-                .padding(top = 8.dp)
-                .wrapContentSize()
-                .align(Alignment.TopCenter)
-                .border(1.dp, Color.White, RoundedCornerShape(12.dp))
-        ) {
-
-            Text(
-                text = "Speed: ${speedOptions[selectedSpeed]} hrs/s",
-                style = AppTheme.typography.bold14,
-                color = Color.White,
-                modifier = Modifier.padding(8.dp)
-            )
-
-            Text(
-                text = "Date: ${formatter.format(date)}",
-                style = AppTheme.typography.bold14,
-                color = Color.White,
-                modifier = Modifier.padding(8.dp)
-
-            )
-
-        }
-
-
-        Row(
-            modifier = Modifier
                 .padding(8.dp)
                 .wrapContentSize()
                 .align(Alignment.BottomCenter)
